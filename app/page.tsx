@@ -2,10 +2,14 @@
 import { decrement, increment } from "@/redux/feature/counter/counterSlice";
 import { RootState } from "../redux/store";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { selectTasks } from "@/redux/feature/task/taskSlice";
+import TaskCard from "./_components/TaskCard/page";
+import TaskAdd from "./_components/TaskAdd/page";
 
 export default function Home() {
   const dispatch = useAppDispatch();
   const counter = useAppSelector((state: RootState) => state.counter);
+  const tasks = useAppSelector(selectTasks);
 
   const handleIncrement = (amount: number) => {
     dispatch(increment(amount));
@@ -37,6 +41,14 @@ export default function Home() {
         >
           Increment by 5
         </button>
+      </div>
+      <div className="container mx-auto">
+        <TaskAdd />
+      </div>
+      <div>
+        {tasks.map((item, idx) => (
+          <TaskCard key={idx} task={item} />
+        ))}
       </div>
     </div>
   );
