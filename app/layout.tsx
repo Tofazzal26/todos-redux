@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Rajdhani } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "./ReduxProvider/ReduxProvider";
+import Header from "./_components/Header/page";
+import { ThemeProvider } from "./providers/theme-provider";
 
 const rajdhani = Rajdhani({ subsets: ["latin"], weight: "600" });
 
@@ -16,9 +18,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={rajdhani.className}>
-        <ReduxProvider>{children}</ReduxProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ReduxProvider>
+            <Header />
+            {children}
+          </ReduxProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
