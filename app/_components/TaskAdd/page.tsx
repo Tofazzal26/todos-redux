@@ -35,9 +35,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
 import { useAppDispatch } from "@/redux/hook";
-import { addTask } from "@/redux/feature/task/taskSlice";
+import { addTask, taskFilter } from "@/redux/feature/task/taskSlice";
 import { ITask } from "@/redux/types/Itask";
 import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
 
@@ -59,6 +60,36 @@ const TaskAdd = () => {
     <div className="flex justify-between items-center my-10">
       <div>
         <h2>Task</h2>
+      </div>
+      <div>
+        <Tabs defaultValue="All">
+          <TabsList>
+            <TabsTrigger
+              onClick={() => dispatch(taskFilter("All"))}
+              value="All"
+            >
+              All
+            </TabsTrigger>
+            <TabsTrigger
+              onClick={() => dispatch(taskFilter("High"))}
+              value="High"
+            >
+              High
+            </TabsTrigger>
+            <TabsTrigger
+              onClick={() => dispatch(taskFilter("Medium"))}
+              value="Medium"
+            >
+              Medium
+            </TabsTrigger>
+            <TabsTrigger
+              onClick={() => dispatch(taskFilter("Low"))}
+              value="Low"
+            >
+              Low
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
       <div>
         <Dialog>
