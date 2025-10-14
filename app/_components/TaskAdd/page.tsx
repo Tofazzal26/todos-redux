@@ -1,9 +1,9 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -19,14 +19,42 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ChevronDownIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useState } from "react";
+import { useAppDispatch } from "@/redux/hook";
+import { addTask } from "@/redux/feature/task/taskSlice";
+import { ITask } from "@/redux/types/Itask";
+import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
+
 const TaskAdd = () => {
+  const [open, setOpen] = useState(false);
+  const dispatch = useAppDispatch();
   const form = useForm();
-  const onSubmit = (data) => {
-    console.log(data);
+
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    const formattedData = {
+      ...data,
+      dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : null,
+    };
+
+    dispatch(addTask(formattedData as ITask));
   };
+
   return (
     <div className="flex justify-between items-center my-10">
       <div>
@@ -39,10 +67,11 @@ const TaskAdd = () => {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Edit profile</DialogTitle>
+              <DialogTitle>Add Task</DialogTitle>
             </DialogHeader>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
+                {/* Title */}
                 <FormField
                   control={form.control}
                   name="title"
@@ -52,17 +81,18 @@ const TaskAdd = () => {
                       <FormControl>
                         <Input {...field} value={field.value || ""} />
                       </FormControl>
-                      <FormDescription />
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
+                {/* Description */}
                 <FormField
                   control={form.control}
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>description</FormLabel>
+                      <FormLabel>Description</FormLabel>
                       <FormControl>
                         <Textarea
                           {...field}
@@ -70,13 +100,87 @@ const TaskAdd = () => {
                           placeholder="Write description..."
                         />
                       </FormControl>
-                      <FormDescription />
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+
+                {/* Priority */}
+                <FormField
+                  control={form.control}
+                  name="priority"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Priority</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Priority" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value="High">High</SelectItem>
+                              <SelectItem value="Medium">Medium</SelectItem>
+                              <SelectItem value="Low">Low</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Due Date */}
+                <FormField
+                  control={form.control}
+                  name="dueDate"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Due Date</FormLabel>
+                      <Popover open={open} onOpenChange={setOpen}>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              id="date"
+                              className="w-full justify-between font-normal"
+                            >
+                              {field.value
+                                ? new Date(field.value).toLocaleDateString()
+                                : "Select date"}
+                              <ChevronDownIcon />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className="w-auto overflow-hidden p-0"
+                          align="start"
+                        >
+                          <Calendar
+                            mode="single"
+                            selected={
+                              field.value ? new Date(field.value) : undefined
+                            }
+                            onSelect={(date) => {
+                              field.onChange(date);
+                              setOpen(false);
+                            }}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <DialogFooter>
-                  <Button type="submit">Save changes</Button>
+                  <Button type="submit" className="mt-4">
+                    Save changes
+                  </Button>
                 </DialogFooter>
               </form>
             </Form>
