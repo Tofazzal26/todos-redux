@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -56,7 +57,7 @@ const TaskAdd = () => {
     };
 
     dispatch(addTask(formattedData as ITask));
-    console.log(data);
+    form.reset();
   };
 
   return (
@@ -245,9 +246,11 @@ const TaskAdd = () => {
                 />
 
                 <DialogFooter>
-                  <Button type="submit" className="mt-4">
-                    Save changes
-                  </Button>
+                  <DialogClose asChild>
+                    <Button type="submit" className="mt-4">
+                      Save changes
+                    </Button>
+                  </DialogClose>
                 </DialogFooter>
               </form>
             </Form>
