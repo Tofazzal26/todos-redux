@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
 const Header = () => {
   const { setTheme } = useTheme();
@@ -18,7 +19,14 @@ const Header = () => {
       <div className="container mx-auto py-4">
         <div className="flex justify-between items-center">
           <div>
-            <h2 className="text-2xl font-semibold">Todos-Redux</h2>
+            <Link href={"/"}>
+              <h2 className="text-2xl font-semibold">Todos-Redux</h2>
+            </Link>
+          </div>
+          <div>
+            <Link href={"/api/user"}>
+              <button>User</button>
+            </Link>
           </div>
           <div>
             <DropdownMenu>
