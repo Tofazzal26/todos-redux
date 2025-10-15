@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { isCompleteToggle, taskDelete } from "@/redux/feature/task/taskSlice";
-import { useAppDispatch } from "@/redux/hook";
+import { selectUser } from "@/redux/feature/userSlice/userSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { ITask } from "@/redux/types/Itask";
 import { Trash2 } from "lucide-react";
 import React from "react";
@@ -11,6 +12,8 @@ interface IProps {
 
 const TaskCard = ({ task }: IProps) => {
   const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
+  console.log(user);
 
   return (
     <div className="container mx-auto mt-10">
@@ -41,6 +44,12 @@ const TaskCard = ({ task }: IProps) => {
                 onClick={() => dispatch(isCompleteToggle(task.id))}
               />
             </div>
+          </div>
+          <div>
+            <h2 className="text-sm">
+              Assign To :{" "}
+              {user?.find((item) => item.id === task.assignTo)?.name || "N/A"}{" "}
+            </h2>
           </div>
           <p className="mt-4">{task.description}</p>
         </div>

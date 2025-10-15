@@ -37,15 +37,17 @@ import {
 } from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
-import { useAppDispatch } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { addTask, taskFilter } from "@/redux/feature/task/taskSlice";
 import { ITask } from "@/redux/types/Itask";
 import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
+import { selectUser } from "@/redux/feature/userSlice/userSlice";
 
 const TaskAdd = () => {
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
   const form = useForm();
+  const user = useAppSelector(selectUser);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     const formattedData = {
@@ -54,6 +56,7 @@ const TaskAdd = () => {
     };
 
     dispatch(addTask(formattedData as ITask));
+    console.log(data);
   };
 
   return (
@@ -101,7 +104,10 @@ const TaskAdd = () => {
               <DialogTitle>Add Task</DialogTitle>
             </DialogHeader>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
                 {/* Title */}
                 <FormField
                   control={form.control}
@@ -156,6 +162,36 @@ const TaskAdd = () => {
                               <SelectItem value="High">High</SelectItem>
                               <SelectItem value="Medium">Medium</SelectItem>
                               <SelectItem value="Low">Low</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="assignTo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Assign To</FormLabel>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Assign to" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              {user?.map((item, idx) => (
+                                <SelectItem key={idx} value={item.id}>
+                                  {item.name}
+                                </SelectItem>
+                              ))}
                             </SelectGroup>
                           </SelectContent>
                         </Select>
